@@ -5,7 +5,36 @@ import styles from '@/styles/Home.module.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
+interface LossData {
+  country: string,
+  equipment_type: string,
+  destroyed: string,
+  abandoned: string,
+  captured: string,
+  damaged: string,
+  type_total: string
+}
+
+export default function Home({ data }: { data: Array<LossData> }) {
+  const russiaInfo = data.slice(0, Math.ceil(data.length / 2))
+  const ukraineInfo = data.slice(Math.ceil(data.length / 2))
+
+  function generateLossDisplay(data: LossData) {
+    switch(data.equipment_type) {
+      case 'All Types':
+        return (
+          <div className='data-container' key={data.type_total}>
+            <h2>{`Total Number of Equipment Lost`}: <span>{data.type_total}</span></h2>
+            <p>Out of which:</p>
+            <p>Destroyed: <span>{data.destroyed}</span></p>
+            <p>Damaged: <span>{data.damaged}</span></p>
+            <p>Captured: <span>{data.captured}</span></p>
+            <p>Abandoned: <span>{data.abandoned}</span></p>
+          </div>
+        )
+    }
+  }
+
   return (
     <>
       <Head>
@@ -15,14 +44,31 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div className={styles.description}>
-          
-        </div>
+        <section className="text-data">
+          <h1>Number of Russian Equipment Losses</h1>
+          {russiaInfo.map((obj) => {
+            return (
+              generateLossDisplay(obj)
+            )
+          })}
+          <h1>Number of Ukrainian Equipment Losses</h1>
+          {ukraineInfo.map((obj) => {
+            return (
+              generateLossDisplay(obj)
+            )
+          })}
+        </section>
       </main>
     </>
   )
 }
 
 export async function getStaticProps() {
-  const data = await fetch('')
+  const res = await fetch('http://localhost:3000/api/data')
+  const data = await res.json()
+  return {
+    props: {
+      data: data
+    }
+  }
 }
