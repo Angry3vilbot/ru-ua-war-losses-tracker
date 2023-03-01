@@ -2,6 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
+import { BarChart, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar } from 'recharts'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -19,9 +20,8 @@ export default function Home({ data }: { data: Array<LossData> }) {
   const russiaInfo = data.slice(0, Math.ceil(data.length / 2))
   const ukraineInfo = data.slice(Math.ceil(data.length / 2))
 
-  function generateLossDisplay(data: LossData) {
-    switch(data.equipment_type) {
-      case 'All Types':
+  function generateLossText(data: LossData) {
+    if(data.equipment_type === 'All Types') {
         return (
           <div className='data-container' key={data.type_total}>
             <h2>{`Total Number of Equipment Lost`}: <span>{data.type_total}</span></h2>
@@ -33,6 +33,48 @@ export default function Home({ data }: { data: Array<LossData> }) {
           </div>
         )
     }
+  }
+
+  function generateLossCharts(russia: Array<LossData>, ukraine: Array<LossData>) {
+    let elementArray: Array<any> = []
+
+    russia.forEach((val) => {
+      if(val.equipment_type === 'Reconnaissance Unmanned Aerial Vehicles') {
+        val.equipment_type = 'Unmanned Aerial Vehicles'
+      }
+      else if(val.equipment_type === 'Radars') {
+        val.equipment_type = 'Radars And Communications Equipment'
+      }
+    })
+
+    let unifiedArray = [...russia, ...ukraine ]
+    unifiedArray.sort((a, b) => a.equipment_type > b.equipment_type ? 1 : -1)
+
+    for(let i = 0; i <= unifiedArray.length / 2; i+=2) {
+      const tempArray: Array<LossData> = [unifiedArray[i], unifiedArray[i+1]]
+      elementArray.push(
+        <ResponsiveContainer height={"100%"} width={"100%"}>
+        <BarChart 
+        data={tempArray}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+        >
+          <CartesianGrid />
+          <XAxis dataKey={"country"}/>
+          <YAxis />
+          <Tooltip/>
+          <Legend />
+          <Bar dataKey={"destroyed"} fill='red'/>
+        </BarChart>
+      </ResponsiveContainer>
+      )
+    }
+
+    return elementArray
   }
 
   return (
@@ -48,15 +90,21 @@ export default function Home({ data }: { data: Array<LossData> }) {
           <h1>Number of Russian Equipment Losses</h1>
           {russiaInfo.map((obj) => {
             return (
-              generateLossDisplay(obj)
+              generateLossText(obj)
             )
           })}
           <h1>Number of Ukrainian Equipment Losses</h1>
           {ukraineInfo.map((obj) => {
             return (
-              generateLossDisplay(obj)
+              generateLossText(obj)
             )
           })}
+        </section>
+        <section className='chart-data'>
+          <h1>Comparison of Ukrainian and Russian Losses by Type</h1>
+          <div className={styles.chart_container}>
+          {generateLossCharts(russiaInfo, ukraineInfo)}
+          </div>
         </section>
       </main>
     </>
