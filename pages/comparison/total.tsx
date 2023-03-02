@@ -1,5 +1,6 @@
 import { BarChart, ResponsiveContainer, CartesianGrid, XAxis, YAxis, Tooltip, Bar, LabelList, Label } from 'recharts'
 import styles from '../../styles/Comparison.module.css'
+import Head from 'next/head'
 
 interface LossData {
     country: string,
@@ -77,17 +78,25 @@ export default function Comparison({ data }: { data: Array<LossData> }) {
         return elementArray
       }
     return (
+      <>
+      <Head>
+        <title>WLT - Total</title>
+        <meta name="description" content="A website for tracking losses in the RU-UA war by Angry3vilbot" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
         <section className={styles.chart_data}>
           <h1>Comparison of Ukrainian and Russian Losses by Type</h1>
           <div className={styles.chart_container}>
           {generateLossCharts(russiaInfo, ukraineInfo)}
           </div>
         </section>
+      </>
     )
 }
 
 export async function getStaticProps() {
-    const res = await fetch('http://localhost:3000/api/data')
+    const res = await fetch(`${process.env.BASE_URL}/api/data`)
     const data = await res.json()
     return {
       props: {
