@@ -4,11 +4,11 @@ import styles from '../../styles/Comparison.module.css'
 interface LossData {
     country: string,
     equipment_type: string,
-    destroyed: string,
-    abandoned: string,
-    captured: string,
-    damaged: string,
-    type_total: string,
+    destroyed: string | number,
+    abandoned: string | number,
+    captured: string | number,
+    damaged: string | number,
+    type_total: string | number,
     fill: string
 }
 
@@ -27,10 +27,22 @@ export default function Comparison({ data }: { data: Array<LossData> }) {
             val.equipment_type = 'Radars And Communications Equipment'
           }
           val.fill = '#dc2626'
+          // Parse the values to make them numbers, as Recharts does not work correctly with strings
+          val.abandoned = parseInt(`${val.abandoned}`, 10)
+          val.damaged = parseInt(`${val.damaged}`, 10)
+          val.destroyed = parseInt(`${val.destroyed}`, 10)
+          val.captured = parseInt(`${val.captured}`, 10)
+          val.type_total = parseInt(`${val.type_total}`, 10)
         })
     
         ukraine.forEach((val) => {
           val.fill = '#0ea5e9'
+          // Parse the values to make them numbers, as Recharts does not work correctly with strings
+          val.abandoned = parseInt(`${val.abandoned}`, 10)
+          val.damaged = parseInt(`${val.damaged}`, 10)
+          val.destroyed = parseInt(`${val.destroyed}`, 10)
+          val.captured = parseInt(`${val.captured}`, 10)
+          val.type_total = parseInt(`${val.type_total}`, 10)
         })
     
         let unifiedArray = [...russia, ...ukraine ]
@@ -49,8 +61,8 @@ export default function Comparison({ data }: { data: Array<LossData> }) {
               bottom: 5,
             }}>
               <CartesianGrid />
-              <XAxis dataKey={"country"} />
-              <YAxis>
+              <XAxis dataKey={"country"} style={{fill: 'white'}} />
+              <YAxis style={{fill: 'white'}} >
                 <Label value={tempArray[1].equipment_type} position={'top'} offset={-150} angle={-90} dx={-20} style={{fill: 'white'}} ></Label>
               </YAxis>
               <Tooltip />
