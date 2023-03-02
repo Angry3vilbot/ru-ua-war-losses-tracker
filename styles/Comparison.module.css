@@ -1,0 +1,16 @@
+.chart_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-rows: repeat(auto-fit, minmax(300px, 1fr));
+  width: 99vw;
+  gap: 5rem;
+}
+
+.chart_data {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.chart_data h1 {
+  padding-bottom: 2rem;
+}

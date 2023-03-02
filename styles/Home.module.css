@@ -1,6 +1,34 @@
-.chart_container {
-  width: 75rem;
-  height: 50rem;
+.loss_text_container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  padding-bottom: 2rem;
+}
+
+.data_container p {
+  font-size: 18px;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
+
+.data_container *:not(h2, span) {
+  padding-top: 1rem;
+}
+
+.main_heading {
+  font-size: 72px;
+  padding-bottom: 4rem;
+}
+
+.secondary_heading {
+  font-size: 48px;
+  padding-bottom: 2rem;
+  color: hsl(199, 89%, 48%);
+}
+
+.secondary_heading:first-of-type {
+  color: hsl(0, 72%, 51%);
 }
 
 .main {
